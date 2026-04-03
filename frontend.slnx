@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/frontend/">
+    <Project Path="frontend/Wsg/Wsg.csproj" />
+  </Folder>
+</Solution>

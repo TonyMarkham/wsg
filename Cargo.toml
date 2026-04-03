@@ -1,0 +1,16 @@
+[workspace]
+members = [
+    "app",
+    "backend/linux/lin-api",
+    "backend/windows/win-api"
+]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+repository = "https://github.com/TonyMarkham/wsg"
+
+[workspace.dependencies]
+tauri = { version = "2.10.3" }
+tauri-build = { version = "2.5.6" }

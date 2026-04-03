@@ -1,0 +1,17 @@
+# Rust
+target/
+
+# Tauri - generated frontend dist
+app/dist/
+
+# .NET
+**/bin/
+**/obj/
+**/wwwroot/lib/
+
+# IDE
+.idea/
+.vs/
+
+# Claude Code
+.claude/

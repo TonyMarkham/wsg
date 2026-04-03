@@ -1,0 +1,34 @@
+{
+  "productName": "wsg",
+  "version": "0.1.0",
+  "identifier": "com.wsg.app",
+  "build": {
+    "beforeDevCommand": "dotnet publish -c Release frontend/Wsg",
+    "beforeBuildCommand": "dotnet publish -c Release frontend/Wsg",
+    "frontendDist": "dist/wwwroot"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Windows Subsystem for Git",
+        "width": 1200,
+        "height": 800,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

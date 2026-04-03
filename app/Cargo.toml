@@ -1,0 +1,11 @@
+[package]
+name = "app"
+version.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+[dependencies]
+tauri = { workspace = true }
+
+[build-dependencies]
+tauri-build = { workspace = true }
