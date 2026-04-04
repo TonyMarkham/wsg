@@ -5,3 +5,5 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
+error-location = { workspace = true }
+thiserror      = { workspace = true }

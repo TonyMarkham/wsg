@@ -5,7 +5,9 @@ edition.workspace = true
 repository.workspace = true
 
 [dependencies]
-tauri = { workspace = true }
+error-location = { workspace = true }
+tauri          = { workspace = true }
+thiserror      = { workspace = true }
 
 [build-dependencies]
 tauri-build = { workspace = true }

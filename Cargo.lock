@@ -51,8 +51,10 @@ checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "error-location",
  "tauri",
  "tauri-build",
+ "thiserror 2.0.18",
 ]
 
 [[package]]
@@ -721,6 +723,12 @@ dependencies = [
  "serde_core",
  "typeid",
 ]
+
+[[package]]
+name = "error-location"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a4b36c50db9121a276979efefc8da4902e1f7f261d20c48ef3fc1e6c718f0311"
 
 [[package]]
 name = "fastrand"
@@ -1739,6 +1747,10 @@ dependencies = [
 [[package]]
 name = "lin-api"
 version = "0.1.0"
+dependencies = [
+ "error-location",
+ "thiserror 2.0.18",
+]
 
 [[package]]
 name = "litemap"
@@ -4229,6 +4241,10 @@ dependencies = [
 [[package]]
 name = "win-api"
 version = "0.1.0"
+dependencies = [
+ "error-location",
+ "thiserror 2.0.18",
+]
 
 [[package]]
 name = "winapi"

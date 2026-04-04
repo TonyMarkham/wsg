@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>STICK-HANDLER | Orchestrated Terminal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 18px;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#091328",
+                      "on-primary": "#005d2f",
+                      "on-error-container": "#ffa8a3",
+                      "on-tertiary": "#573500",
+                      "surface-bright": "#1f2b49",
+                      "on-primary-container": "#00391b",
+                      "inverse-surface": "#faf8ff",
+                      "on-background": "#dee5ff",
+                      "secondary-container": "#00668a",
+                      "primary": "#5bfc9a",
+                      "outline": "#6d758c",
+                      "surface-container-high": "#141f38",
+                      "surface-container-highest": "#192540",
+                      "on-tertiary-fixed-variant": "#563400",
+                      "error": "#ff716c",
+                      "secondary-dim": "#05a9e3",
+                      "primary-container": "#05cb6f",
+                      "inverse-primary": "#006e39",
+                      "tertiary-container": "#f8a010",
+                      "tertiary": "#ffb148",
+                      "surface-variant": "#192540",
+                      "on-secondary-fixed": "#00394f",
+                      "on-secondary-fixed-variant": "#005777",
+                      "inverse-on-surface": "#4d556b",
+                      "secondary-fixed-dim": "#73ceff",
+                      "secondary": "#2db7f2",
+                      "background": "#060e20",
+                      "on-primary-fixed-variant": "#006836",
+                      "on-tertiary-fixed": "#2a1700",
+                      "surface-container-lowest": "#000000",
+                      "on-secondary": "#003044",
+                      "secondary-fixed": "#9bdaff",
+                      "primary-dim": "#4aed8d",
+                      "error-container": "#9f0519",
+                      "primary-fixed": "#5bfc9a",
+                      "outline-variant": "#40485d",
+                      "surface-tint": "#5bfc9a",
+                      "tertiary-dim": "#e79400",
+                      "tertiary-fixed-dim": "#e79400",
+                      "on-secondary-container": "#f2f9ff",
+                      "on-surface": "#dee5ff",
+                      "error-dim": "#d7383b",
+                      "surface-container": "#0f1930",
+                      "on-surface-variant": "#a3aac4",
+                      "on-tertiary-container": "#4a2c00",
+                      "tertiary-fixed": "#f8a010",
+                      "primary-fixed-dim": "#4aed8d",
+                      "surface-dim": "#060e20",
+                      "on-primary-fixed": "#004823",
+                      "on-error": "#490006",
+                      "surface": "#060e20"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "fontFamily": {
+                      "headline": ["Space Grotesk"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface flex flex-col h-screen overflow-hidden">
+<!-- TopNavBar (Repository Tabs) -->
+<nav class="bg-[#091328] dark:bg-[#091328] w-full top-0 sticky z-50 flex items-center h-10 overflow-x-auto no-scrollbar font-['Inter'] text-[11px] uppercase tracking-wider">
+<div class="text-[#dee5ff] bg-[#141f38] border-t-2 border-[#5bfc9a] px-4 h-full flex items-center justify-center transition-all active:opacity-80 duration-150 cursor-pointer">
+            stick-handler
+        </div>
+<div class="text-[#a3aac4] hover:bg-[#141f38] px-4 h-full flex items-center justify-center opacity-70 hover:text-[#dee5ff] transition-all cursor-pointer">
+            winforge
+        </div>
+<div class="text-[#a3aac4] hover:bg-[#141f38] px-4 h-full flex items-center justify-center opacity-70 hover:text-[#dee5ff] transition-all cursor-pointer">
+            coach-saas
+        </div>
+<div class="text-[#a3aac4] hover:bg-[#141f38] px-4 h-full flex items-center justify-center opacity-70 hover:text-[#dee5ff] transition-all cursor-pointer">
+            cc-marketplace
+        </div>
+<div class="text-[#a3aac4] hover:bg-[#141f38] px-4 h-full flex items-center justify-center opacity-70 hover:text-[#dee5ff] transition-all cursor-pointer">
+            wsg
+        </div>
+<div class="ml-auto flex items-center px-4 gap-4">
+<span class="material-symbols-outlined text-[#5bfc9a] cursor-pointer">add</span>
+<span class="material-symbols-outlined text-[#5bfc9a] cursor-pointer">more_vert</span>
+</div>
+</nav>
+<!-- TopAppBar (Actions) -->
+<header class="bg-[#060e20] dark:bg-[#060e20] w-full sticky flex items-center justify-between px-4 h-12 font-['Space_Grotesk'] tracking-tight">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#5bfc9a]" data-icon="account_tree">account_tree</span>
+<span class="text-lg font-bold text-[#dee5ff] tracking-tighter">orchestrated_terminal / stick-handler</span>
+<span class="bg-surface-container-highest text-primary text-[10px] px-2 py-0.5 rounded font-mono uppercase tracking-widest ml-2">main</span>
+</div>
+<div class="flex items-center gap-1">
+<button class="flex items-center gap-2 px-3 py-1.5 hover:bg-[#141f38] rounded-md transition-colors text-on-surface-variant text-sm active:scale-95 duration-100">
+<span class="material-symbols-outlined text-xs">download</span> Fetch
+            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 hover:bg-[#141f38] rounded-md transition-colors text-on-surface-variant text-sm active:scale-95 duration-100">
+<span class="material-symbols-outlined text-xs">south</span> Pull
+            </button>
+<button class="flex items-center gap-2 px-3 py-1.5 hover:bg-[#141f38] rounded-md transition-colors text-on-surface-variant text-sm active:scale-95 duration-100">
+<span class="material-symbols-outlined text-xs">north</span> Push
+            </button>
+<div class="w-[1px] h-4 bg-outline-variant/30 mx-2"></div>
+<button class="flex items-center gap-2 px-3 py-1.5 hover:bg-[#141f38] rounded-md transition-colors text-on-surface-variant text-sm active:scale-95 duration-100">
+<span class="material-symbols-outlined text-xs">layers</span> Stash
+            </button>
+<span class="material-symbols-outlined text-on-surface-variant ml-4 cursor-pointer hover:text-primary transition-colors" data-icon="settings">settings</span>
+</div>
+</header>
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Column: NavigationDrawer -->
+<aside class="bg-[#091328] dark:bg-[#091328] h-full w-64 flex flex-col py-6 px-3 space-y-2 font-['Inter'] text-sm uppercase tracking-widest">
+<h3 class="text-on-surface-variant text-[10px] px-3 mb-2 font-bold opacity-50">WORKSPACE</h3>
+<div class="flex items-center gap-3 px-3 py-2 text-[#5bfc9a] font-bold bg-[#141f38] rounded-sm transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span>Worktrees</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-[#a3aac4] opacity-70 hover:text-[#dee5ff] hover:bg-[#141f38] transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="alt_route">alt_route</span>
+<span>Branches</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-[#a3aac4] opacity-70 hover:text-[#dee5ff] hover:bg-[#141f38] transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="cloud_queue">cloud_queue</span>
+<span>Remotes</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-[#a3aac4] opacity-70 hover:text-[#dee5ff] hover:bg-[#141f38] transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="sell">sell</span>
+<span>Tags</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2 text-[#a3aac4] opacity-70 hover:text-[#dee5ff] hover:bg-[#141f38] transition-all duration-200 ease-in-out cursor-pointer">
+<span class="material-symbols-outlined" data-icon="layers">layers</span>
+<span>Stashes</span>
+</div>
+<div class="mt-auto pt-4 border-t border-outline-variant/10">
+<div class="flex items-center gap-3 px-3 py-2 text-[#a3aac4] opacity-70 hover:text-[#dee5ff] hover:bg-[#141f38] transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined">terminal</span>
+<span>Terminal</span>
+</div>
+</div>
+</aside>
+<!-- Center Column: File Lists & Commit -->
+<section class="flex-1 flex flex-col bg-surface overflow-hidden border-x border-outline-variant/10">
+<div class="flex-1 p-4 flex flex-col gap-6 overflow-y-auto">
+<!-- Unstaged Files -->
+<div>
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+                            Unstaged Changes <span class="bg-surface-container-highest px-2 rounded text-[10px]">2</span>
+</h4>
+<button class="text-primary text-[10px] hover:underline uppercase font-bold">Stage All</button>
+</div>
+<div class="space-y-1">
+<div class="flex items-center justify-between p-2 rounded-md hover:bg-surface-container-low cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary scale-75">edit_square</span>
+<span class="text-sm font-mono">README.md</span>
+</div>
+<span class="text-[10px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">modified</span>
+</div>
+<div class="flex items-center justify-between p-2 rounded-md hover:bg-surface-container-low cursor-pointer group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary scale-75">edit_square</span>
+<span class="text-sm font-mono">Cargo.lock</span>
+</div>
+<span class="text-[10px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">modified</span>
+</div>
+</div>
+</div>
+<!-- Staged Files -->
+<div class="opacity-60">
+<div class="flex items-center justify-between mb-2">
+<h4 class="font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+                            Staged Changes <span class="bg-surface-container-highest px-2 rounded text-[10px]">0</span>
+</h4>
+</div>
+<div class="h-16 border-2 border-dashed border-outline-variant/20 rounded-lg flex items-center justify-center text-xs text-on-surface-variant/40 italic">
+                        No files staged for commit
+                    </div>
+</div>
+</div>
+<!-- Bottom Center: Commit Input -->
+<div class="p-4 bg-surface-container-low border-t border-outline-variant/20">
+<div class="bg-surface-container-lowest rounded-md p-3 flex flex-col gap-2">
+<input class="bg-transparent border-none focus:ring-0 text-sm font-mono text-primary placeholder:text-on-surface-variant/30 w-full" placeholder="Commit subject" type="text" value="docs: update readme with orchestration protocols"/>
+<textarea class="bg-transparent border-none focus:ring-0 text-xs font-mono text-on-surface-variant placeholder:text-on-surface-variant/30 w-full h-16 resize-none" placeholder="Description (optional)">Standardized the terminal injection sequences for better hand-off between stick-handler and winforge modules.</textarea>
+</div>
+<div class="flex justify-between items-center mt-3">
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">alternate_email</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer">tag</span>
+</div>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-4 py-1.5 rounded-md font-bold text-xs uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">
+                        Commit to main
+                    </button>
+</div>
+</div>
+</section>
+<!-- Right Column: Diff View -->
+<section class="w-1/2 bg-surface-container-high flex flex-col overflow-hidden">
+<div class="h-10 px-4 flex items-center justify-between bg-surface-container-highest border-b border-outline-variant/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-xs text-on-surface-variant">description</span>
+<span class="text-xs font-mono text-on-surface">README.md</span>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-xs text-on-surface-variant hover:text-white cursor-pointer">unfold_more</span>
+<span class="material-symbols-outlined text-xs text-on-surface-variant hover:text-white cursor-pointer">open_in_new</span>
+</div>
+</div>
+<div class="flex-1 overflow-auto p-4 font-mono text-xs leading-relaxed">
+<div class="flex gap-4 opacity-30 mb-2">
+<span class="w-8 text-right">21</span>
+<span class="w-8 text-right">21</span>
+<span>## Technical Specs</span>
+</div>
+<div class="flex gap-4 opacity-30">
+<span class="w-8 text-right">22</span>
+<span class="w-8 text-right">22</span>
+<span>The stick-handler service manages:</span>
+</div>
+<div class="flex gap-4 bg-error-container/20 text-error-dim">
+<span class="w-8 text-right">- 23</span>
+<span class="w-8 text-right"></span>
+<span class="flex-1 bg-error-container/30">- Standard websocket connections</span>
+</div>
+<div class="flex gap-4 bg-primary-container/20 text-primary">
+<span class="w-8 text-right"></span>
+<span class="w-8 text-right">+ 23</span>
+<span class="flex-1 bg-primary-container/30">+ High-frequency orchestrated terminal sequences</span>
+</div>
+<div class="flex gap-4 bg-primary-container/20 text-primary">
+<span class="w-8 text-right"></span>
+<span class="w-8 text-right">+ 24</span>
+<span class="flex-1 bg-primary-container/30">+ Optimized low-latency binary protocols</span>
+</div>
+<div class="flex gap-4 opacity-30">
+<span class="w-8 text-right">24</span>
+<span class="w-8 text-right">25</span>
+<span></span>
+</div>
+<div class="flex gap-4 opacity-30">
+<span class="w-8 text-right">25</span>
+<span class="w-8 text-right">26</span>
+<span>### Installation</span>
+</div>
+<!-- Decoration: Code visualization -->
+<div class="mt-8 p-4 rounded-lg bg-surface-container-lowest/50 border border-outline-variant/10">
+<div class="flex items-center gap-2 mb-4">
+<div class="w-2 h-2 rounded-full bg-error"></div>
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="text-[10px] text-on-surface-variant/40 ml-2">HEX_DUMP_VIEWER</span>
+</div>
+<div class="grid grid-cols-8 gap-2 text-[10px] opacity-40">
+<span>48 65 6C 6C</span>
+<span>6F 20 57 6F</span>
+<span class="text-primary opacity-100">72 6C 64 21</span>
+<span>0A 0D 53 74</span>
+<span>69 63 6B 20</span>
+<span>48 61 6E 64</span>
+<span>6C 65 72 00</span>
+<span>FF E2 A1 0C</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Visual soul decoration -->
+<div class="fixed bottom-0 right-0 p-4 pointer-events-none">
+<div class="text-[10px] font-mono text-primary opacity-20 uppercase tracking-[0.5em]">
+            System Status: Nominal // Latency: 12ms
+        </div>
+</div>
+</body></html>
