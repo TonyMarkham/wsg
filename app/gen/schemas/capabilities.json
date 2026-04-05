@@ -1,1 +1,1 @@
-{}
+{"default":{"identifier":"default","description":"Default capability — grants core and dialog permissions to the main window","local":true,"windows":["main"],"permissions":["core:default","dialog:default"]}}

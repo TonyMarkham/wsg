@@ -12,7 +12,10 @@ edition = "2024"
 repository = "https://github.com/TonyMarkham/wsg"
 
 [workspace.dependencies]
-error-location = { version = "0.1.0" }
-tauri          = { version = "2.10.3" }
-tauri-build    = { version = "2.5.6" }
-thiserror      = { version = "2.0.18" }
+error-location      = { version = "0.1.0" }
+serde               = { version = "1.0.228", features = ["derive"] }
+serde_json          = { version = "1.0.149" }
+tauri               = { version = "2.10.3" }
+tauri-build         = { version = "2.5.6" }
+tauri-plugin-dialog = { version = "2.7.0" }
+thiserror           = { version = "2.0.18" }
