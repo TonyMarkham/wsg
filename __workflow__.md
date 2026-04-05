@@ -1,6 +1,6 @@
 ## `optimize-plan` call
 ```text
-/online-entity-cc-plugin:optimize-plan VS-160.md
+/online-entity-cc-plugin:optimize-plan VS-01.md
 **NOTE** Assume that cargo check/clippy/build/test are all clean
 **NOTE** Assume that dotnet build/test/publish are all clean
 ```
