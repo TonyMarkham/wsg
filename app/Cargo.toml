@@ -7,6 +7,7 @@ repository.workspace = true
 [dependencies]
 error-location = { workspace = true }
 tauri          = { workspace = true }
+tauri-plugin-dialog = "2.7.0"
 thiserror      = { workspace = true }
 
 [build-dependencies]
