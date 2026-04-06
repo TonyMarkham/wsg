@@ -1,18 +1,31 @@
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">WSG</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
+<aside class="bg-surface-container-low h-full w-64 flex flex-col py-6 px-3 space-y-2 font-body text-sm uppercase tracking-widest">
+    <h3 class="text-on-surface-variant text-[10px] px-3 mb-2 font-bold opacity-50">WORKSPACE</h3>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
+    <div class="flex items-center gap-3 px-3 py-2 text-primary font-bold bg-surface-container-high rounded-sm transition-all duration-200 cursor-pointer">
+        <span class="material-symbols-outlined">account_tree</span>
+        <span>Worktrees</span>
+    </div>
+    <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant opacity-70 hover:text-on-surface hover:bg-surface-container-high rounded-sm transition-all duration-200 cursor-pointer">
+        <span class="material-symbols-outlined">alt_route</span>
+        <span>Branches</span>
+    </div>
+    <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant opacity-70 hover:text-on-surface hover:bg-surface-container-high rounded-sm transition-all duration-200 cursor-pointer">
+        <span class="material-symbols-outlined">cloud_queue</span>
+        <span>Remotes</span>
+    </div>
+    <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant opacity-70 hover:text-on-surface hover:bg-surface-container-high rounded-sm transition-all duration-200 cursor-pointer">
+        <span class="material-symbols-outlined">sell</span>
+        <span>Tags</span>
+    </div>
+    <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant opacity-70 hover:text-on-surface hover:bg-surface-container-high rounded-sm transition-all duration-200 cursor-pointer">
+        <span class="material-symbols-outlined">layers</span>
+        <span>Stashes</span>
+    </div>
+
+    <div class="mt-auto pt-4 border-t border-outline-variant/10">
+        <div class="flex items-center gap-3 px-3 py-2 text-on-surface-variant opacity-70 hover:text-on-surface hover:bg-surface-container-high rounded-sm transition-all duration-200 cursor-pointer">
+            <span class="material-symbols-outlined">terminal</span>
+            <span>Terminal</span>
         </div>
-    </nav>
-</div>
+    </div>
+</aside>

@@ -1,0 +1,85 @@
+@inject FileTreeService TreeService
+
+<div class="flex flex-col h-full bg-surface overflow-hidden">
+    <!-- Header -->
+    <div class="flex items-center justify-between px-4 py-2 border-b border-outline-variant/10 shrink-0">
+        <h4 class="font-headline font-bold text-xs uppercase tracking-widest text-on-surface-variant flex items-center gap-2">
+            Unstaged Changes
+            <span class="bg-surface-container-highest px-2 rounded text-[10px]">@Files.Count</span>
+        </h4>
+        <button class="text-primary text-[10px] hover:underline uppercase font-bold"
+                @onclick="StageAll">Stage All</button>
+    </div>
+
+    <!-- File tree -->
+    <div class="flex-1 overflow-y-auto py-1">
+        @if (_visibleNodes.Count == 0)
+        {
+            <div class="h-16 m-3 border-2 border-dashed border-outline-variant/20 rounded-lg flex items-center justify-center text-xs text-on-surface-variant/40 italic">
+                No unstaged changes
+            </div>
+        }
+        else
+        {
+            <Virtualize Items="_visibleNodes" Context="node" ItemSize="32">
+                <div class="flex items-center justify-between px-2 py-1 hover:bg-surface-container-low cursor-pointer group"
+                     style="padding-left: @(16 + node.Depth * 16)px"
+                     @onclick="() => OnNodeClick(node)">
+                    @if (node.IsDirectory)
+                    {
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-on-surface-variant transition-transform duration-150 @(node.IsExpanded ? "" : "-rotate-90")"
+                                  style="font-size:14px">chevron_right</span>
+                            <span class="material-symbols-outlined text-on-surface-variant" style="font-size:14px">folder</span>
+                            <span class="text-xs text-on-surface-variant">@node.Name</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined @StatusColor(node.StatusCode)" style="font-size:14px">edit_square</span>
+                            <span class="text-xs font-mono text-on-surface">@node.Name</span>
+                        </div>
+                        <span class="text-[10px] text-on-surface-variant opacity-0 group-hover:opacity-100 transition-opacity">@node.StatusCode</span>
+                    }
+                </div>
+            </Virtualize>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<FileStatus> Files { get; set; } = [];
+    [Parameter] public EventCallback<string> OnStage { get; set; }
+    [Parameter] public EventCallback<(string, bool)> OnSelectFile { get; set; }
+
+    private List<TreeNode> _visibleNodes = [];
+
+    protected override void OnParametersSet() =>
+        _visibleNodes = TreeService.BuildTree(Files);
+
+    private async Task OnNodeClick(TreeNode node)
+    {
+        if (node.IsDirectory)
+        {
+            TreeService.ToggleFolder(_visibleNodes, node);
+        }
+        else
+        {
+            await OnSelectFile.InvokeAsync((node.FullPath, false));
+        }
+    }
+
+    private async Task StageAll()
+    {
+        foreach (var file in Files)
+            await OnStage.InvokeAsync(file.Path);
+    }
+
+    private static string StatusColor(string? code) => code switch
+    {
+        "A" => "text-primary",
+        "D" => "text-error",
+        _   => "text-tertiary"
+    };
+}

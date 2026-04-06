@@ -1,0 +1,119 @@
+@inject IJSRuntime jsRuntime
+@inject GitService GitService
+@inject AppState AppState
+@implements IDisposable
+
+<div class="flex flex-col h-full bg-surface-container-high overflow-hidden">
+    <!-- Header -->
+    <div class="h-10 px-4 flex items-center justify-between bg-surface-container-highest border-b border-outline-variant/10 shrink-0">
+        @if (Repo?.SelectedFile is { } file)
+        {
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-on-surface-variant" style="font-size:14px">description</span>
+                <span class="text-xs font-mono text-on-surface">@file.Split('/').Last()</span>
+            </div>
+            <div class="flex gap-4">
+                <span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer" style="font-size:14px">unfold_more</span>
+                <span class="material-symbols-outlined text-on-surface-variant hover:text-on-surface cursor-pointer" style="font-size:14px">open_in_new</span>
+            </div>
+        }
+        else
+        {
+            <span class="text-xs text-on-surface-variant/40 italic">Select a file to view diff</span>
+        }
+    </div>
+
+    <!-- Monaco diff editor -->
+    <div class="flex-1 overflow-hidden">
+        <StandaloneDiffEditor @ref="_editor"
+                              ConstructionOptions="EditorOptions"
+                              OnDidInit="OnEditorInit" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public RepoContext? Repo { get; set; }
+
+    private StandaloneDiffEditor? _editor;
+    private bool _themeSet;
+    private string? _lastFile;
+    private bool _lastStaged;
+
+    protected override void OnInitialized() => AppState.OnChange += OnStateChanged;
+
+    public void Dispose() => AppState.OnChange -= OnStateChanged;
+
+    private void OnStateChanged() => InvokeAsync(async () =>
+    {
+        await LoadDiff();
+        StateHasChanged();
+    });
+
+    private StandaloneDiffEditorConstructionOptions EditorOptions(StandaloneDiffEditor editor) => new()
+    {
+        Theme = "orchestrated-terminal",
+        AutomaticLayout = true,
+        ReadOnly = true,
+        RenderSideBySide = true,
+    };
+
+    private async Task OnEditorInit()
+    {
+        await DefineTheme();
+        await LoadDiff();
+    }
+
+    private async Task DefineTheme()
+    {
+        if (_themeSet) return;
+        await BlazorMonaco.Editor.Global.DefineTheme(jsRuntime, "orchestrated-terminal", new StandaloneThemeData
+        {
+            Base = "vs-dark",
+            Inherit = true,
+            Rules = [],
+            Colors = new Dictionary<string, string>
+            {
+                ["editor.background"]                 = "#060e20",
+                ["editor.foreground"]                 = "#dee5ff",
+                ["diffEditor.insertedTextBackground"] = "#05cb6f1a",
+                ["diffEditor.removedTextBackground"]  = "#9f05191a",
+                ["editorLineNumber.foreground"]       = "#a3aac4",
+            }
+        });
+        _themeSet = true;
+    }
+
+    private async Task LoadDiff()
+    {
+        if (_editor is null || Repo?.SelectedFile is null) return;
+        if (_lastFile == Repo.SelectedFile && _lastStaged == Repo.SelectedFileIsStaged) return;
+
+        _lastFile = Repo.SelectedFile;
+        _lastStaged = Repo.SelectedFileIsStaged;
+
+        FileDiffResult result;
+        try
+        {
+            result = await GitService.GetDiffAsync(Repo.WslDistro, Repo.WslPath, Repo.SelectedFile, Repo.SelectedFileIsStaged);
+        }
+        catch
+        {
+            return;
+        }
+
+        var originalModel = await GetOrCreateModel(result.Original, "plaintext", "diff://original");
+        var modifiedModel = await GetOrCreateModel(result.Modified, "plaintext", "diff://modified");
+        await _editor.SetModel(new DiffEditorModel { Original = originalModel, Modified = modifiedModel });
+    }
+
+    private async Task<TextModel> GetOrCreateModel(string value, string language, string uri)
+    {
+        var model = await BlazorMonaco.Editor.Global.GetModel(jsRuntime, uri);
+        if (model is not null)
+        {
+            await model.SetValue(value);
+            return model;
+        }
+        return await BlazorMonaco.Editor.Global.CreateModel(jsRuntime, value, language, uri);
+    }
+}

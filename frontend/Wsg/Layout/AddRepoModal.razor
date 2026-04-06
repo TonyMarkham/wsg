@@ -1,0 +1,169 @@
+@inject AppState AppState
+@inject GitService GitService
+@implements IDisposable
+
+@if (AppState.ShowAddRepoModal)
+{
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" @onclick="Close">
+        <div class="bg-surface-container-highest/80 backdrop-blur-xl border border-outline-variant/20 rounded-xl shadow-2xl w-96 p-6"
+             @onclick:stopPropagation="true">
+
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-on-surface font-headline font-bold text-sm uppercase tracking-widest">Add Repository</h2>
+                <span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface" @onclick="Close">close</span>
+            </div>
+
+            @if (_error is not null)
+            {
+                <p class="text-error text-xs mb-3">@_error</p>
+            }
+
+            @if (_loading)
+            {
+                <p class="text-on-surface-variant text-xs">Loading...</p>
+            }
+            else if (_selectedDistro is null)
+            {
+                <!-- Step 1: source selection -->
+                <p class="text-on-surface-variant text-xs mb-3 uppercase tracking-wider">Select source:</p>
+
+                <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-surface-container-high cursor-pointer transition-colors mb-1"
+                     @onclick="PickWindowsFolder">
+                    <span class="text-base">🪟</span>
+                    <span class="text-on-surface text-sm">Windows</span>
+                </div>
+
+                @foreach (var distro in _distros)
+                {
+                    var d = distro;
+                    <div class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-surface-container-high cursor-pointer transition-colors mb-1"
+                         @onclick="() => SelectWslDistro(d)">
+                        <span class="text-base">🐧</span>
+                        <span class="text-on-surface text-sm">@d</span>
+                    </div>
+                }
+
+                <div class="mt-4 flex justify-end">
+                    <button class="text-on-surface-variant text-xs hover:text-on-surface transition-colors" @onclick="Close">Cancel</button>
+                </div>
+            }
+            else
+            {
+                <!-- Step 2: WSL path input -->
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="text-base">🐧</span>
+                    <span class="text-on-surface text-sm font-mono">@_selectedDistro</span>
+                    <span class="material-symbols-outlined text-on-surface-variant text-xs cursor-pointer hover:text-on-surface ml-auto"
+                          @onclick="() => _selectedDistro = null">arrow_back</span>
+                </div>
+
+                <label class="text-on-surface-variant text-xs uppercase tracking-wider mb-1 block">Linux path</label>
+                <input class="w-full bg-surface-container-lowest text-on-surface font-mono text-sm px-3 py-2 rounded-md outline-none focus:ring-1 focus:ring-primary/40 placeholder:text-on-surface-variant/30"
+                       placeholder="/home/user/repos/myrepo"
+                       @bind="_wslPath"
+                       @bind:event="oninput"
+                       @onkeydown="OnPathKeyDown" />
+
+                <div class="mt-4 flex justify-end gap-3">
+                    <button class="text-on-surface-variant text-xs hover:text-on-surface transition-colors" @onclick="Close">Cancel</button>
+                    <button class="bg-primary text-on-primary px-4 py-1.5 rounded-md font-bold text-xs uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all disabled:opacity-40"
+                            disabled="@(string.IsNullOrWhiteSpace(_wslPath) || _validating)"
+                            @onclick="AddWslRepo">
+                        @(_validating ? "Checking..." : "Add")
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private List<string> _distros = [];
+    private bool _loading = false;
+    private bool _validating = false;
+    private string? _error;
+    private string? _selectedDistro;   // null = step 1, non-null = step 2 (WSL path input)
+    private string _wslPath = "";
+
+    protected override void OnInitialized() => AppState.OnChange += OnStateChanged;
+
+    public void Dispose() => AppState.OnChange -= OnStateChanged;
+
+    private async void OnStateChanged()
+    {
+        if (AppState.ShowAddRepoModal && _distros.Count == 0 && !_loading)
+            await LoadDistros();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadDistros()
+    {
+        _loading = true;
+        StateHasChanged();
+        try { _distros = await GitService.GetWslDistrosAsync(); }
+        catch { _distros = []; }
+        _loading = false;
+    }
+
+    // ── Windows: open native folder picker ─────────────────────────
+    private async Task PickWindowsFolder()
+    {
+        _error = null;
+        string? picked;
+        try { picked = await GitService.PickFolderAsync(null); }
+        catch { _error = "Failed to open folder picker."; return; }
+
+        if (picked is null) return;
+
+        await ValidateAndAdd("", picked);
+    }
+
+    // ── WSL: step 2 — distro selected, show path input ─────────────
+    private void SelectWslDistro(string distro)
+    {
+        _selectedDistro = distro;
+        _wslPath = "";
+        _error = null;
+    }
+
+    private async Task OnPathKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await AddWslRepo();
+    }
+
+    private async Task AddWslRepo()
+    {
+        if (string.IsNullOrWhiteSpace(_wslPath) || _selectedDistro is null) return;
+        _error = null;
+        await ValidateAndAdd(_selectedDistro, _wslPath.Trim());
+    }
+
+    // ── Shared validation + add ─────────────────────────────────────
+    private async Task ValidateAndAdd(string distro, string path)
+    {
+        _validating = true;
+        bool valid;
+        try { valid = await GitService.ValidateGitRepoAsync(distro, path); }
+        catch { valid = false; }
+        _validating = false;
+
+        if (!valid)
+        {
+            _error = "Not a git repository.";
+            return;
+        }
+
+        AppState.AddRepo(new RepoContext { WslDistro = distro, WslPath = path });
+        Close();
+    }
+
+    private void Close()
+    {
+        AppState.ShowAddRepoModal = false;
+        _selectedDistro = null;
+        _wslPath = "";
+        _error = null;
+        AppState.NotifyChange();
+    }
+}

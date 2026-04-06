@@ -1,6 +1,6 @@
 ## `optimize-plan` call
 ```text
-/online-entity-cc-plugin:optimize-plan VS-01.md
+/online-entity-cc-plugin:optimize-plan VS-02.md
 **NOTE** Assume that cargo check/clippy/build/test are all clean
 **NOTE** Assume that dotnet build/test/publish are all clean
 ```
@@ -18,12 +18,12 @@
 
 - **CRITICAL** Be diligent not to miss anything
 ```
-
+[lib.rs](app/src/lib.rs)
 ---
 
 ## Audit
 ```text
-- Read `VS-01.md`
+- Read `VS-02.md`
 - Audit it against the current repository code
 ```
 

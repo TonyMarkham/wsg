@@ -1,0 +1,45 @@
+@inject AppState AppState
+@implements IDisposable
+
+<header class="bg-surface w-full flex items-center justify-between px-4 h-12 font-headline tracking-tight shrink-0">
+    @if (AppState.ActiveRepo is { } repo)
+    {
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary">account_tree</span>
+            <span class="text-lg font-bold text-on-surface tracking-tighter">@repo.Name</span>
+            @if (repo.Branch is not null)
+            {
+                <span class="bg-surface-container-highest text-primary text-[10px] px-2 py-0.5 rounded font-mono uppercase tracking-widest ml-2">@repo.Branch</span>
+            }
+        </div>
+    }
+    else
+    {
+        <div></div>
+    }
+
+    <div class="flex items-center gap-1">
+        <button class="flex items-center gap-2 px-3 py-1.5 hover:bg-surface-container-high rounded-md transition-colors text-on-surface-variant text-sm active:scale-95 duration-100">
+            <span class="material-symbols-outlined text-xs">download</span> Fetch
+        </button>
+        <button class="flex items-center gap-2 px-3 py-1.5 hover:bg-surface-container-high rounded-md transition-colors text-on-surface-variant text-sm active:scale-95 duration-100">
+            <span class="material-symbols-outlined text-xs">south</span> Pull
+        </button>
+        <button class="flex items-center gap-2 px-3 py-1.5 hover:bg-surface-container-high rounded-md transition-colors text-on-surface-variant text-sm active:scale-95 duration-100">
+            <span class="material-symbols-outlined text-xs">north</span> Push
+        </button>
+        <div class="w-[1px] h-4 bg-outline-variant/30 mx-2"></div>
+        <button class="flex items-center gap-2 px-3 py-1.5 hover:bg-surface-container-high rounded-md transition-colors text-on-surface-variant text-sm active:scale-95 duration-100">
+            <span class="material-symbols-outlined text-xs">layers</span> Stash
+        </button>
+        <span class="material-symbols-outlined text-on-surface-variant ml-4 cursor-pointer hover:text-primary transition-colors">settings</span>
+    </div>
+</header>
+
+@code {
+    protected override void OnInitialized() => AppState.OnChange += OnStateChanged;
+
+    public void Dispose() => AppState.OnChange -= OnStateChanged;
+
+    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+}

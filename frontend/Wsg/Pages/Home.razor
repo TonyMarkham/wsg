@@ -1,3 +1,108 @@
 @page "/"
+@inject AppState AppState
+@inject GitService GitService
+@implements IDisposable
 
-<PageTitle>WSG</PageTitle>
+@if (AppState.ActiveRepo is null)
+{
+    <div class="flex flex-1 items-center justify-center h-full text-on-surface-variant text-sm">
+        <div class="text-center">
+            <span class="material-symbols-outlined text-4xl mb-3 block opacity-30">account_tree</span>
+            <p class="opacity-50">Add a repository to get started</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="h-full w-full overflow-hidden">
+        <SplitContainer TSize="int" Orientation="SplitterOrientation.Vertical" FirstPaneSize="400">
+            <FirstPane>
+                <SplitContainer TSize="int" Orientation="SplitterOrientation.Horizontal" FirstPaneSize="300">
+                    <FirstPane>
+                        <UnstagedPane Files="_unstaged" OnStage="StageFile" OnSelectFile="SelectFile" />
+                    </FirstPane>
+                    <SecondPane>
+                        <StagedPane Files="_staged" OnUnstage="UnstageFile" OnSelectFile="SelectFile" />
+                    </SecondPane>
+                </SplitContainer>
+            </FirstPane>
+            <SecondPane>
+                <SplitContainer TSize="int" Orientation="SplitterOrientation.Horizontal" FirstPaneSize="300">
+                    <FirstPane>
+                        <DiffPane Repo="AppState.ActiveRepo" />
+                    </FirstPane>
+                    <SecondPane>
+                        <CommitPane Repo="AppState.ActiveRepo" OnCommit="RefreshStatus" />
+                    </SecondPane>
+                </SplitContainer>
+            </SecondPane>
+        </SplitContainer>
+    </div>
+}
+
+@code {
+    private List<FileStatus> _unstaged = [];
+    private List<FileStatus> _staged = [];
+
+    protected override void OnInitialized() => AppState.OnChange += OnStateChanged;
+
+    public void Dispose() => AppState.OnChange -= OnStateChanged;
+
+    private async void OnStateChanged()
+    {
+        await InvokeAsync(async () =>
+        {
+            await RefreshStatus();
+            StateHasChanged();
+        });
+    }
+
+    protected override async Task OnInitializedAsync() => await RefreshStatus();
+
+    private async Task RefreshStatus()
+    {
+        var repo = AppState.ActiveRepo;
+        if (repo is null) return;
+
+        try
+        {
+            var status = await GitService.GetStatusAsync(repo.WslDistro, repo.WslPath);
+            repo.Branch = status.Branch;
+            repo.LastStatus = status;
+            _unstaged = status.Unstaged;
+            _staged = status.Staged;
+        }
+        catch
+        {
+            _unstaged = [];
+            _staged = [];
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task StageFile(string filePath)
+    {
+        var repo = AppState.ActiveRepo;
+        if (repo is null) return;
+        await GitService.StageFileAsync(repo.WslDistro, repo.WslPath, filePath);
+        await RefreshStatus();
+    }
+
+    private async Task UnstageFile(string filePath)
+    {
+        var repo = AppState.ActiveRepo;
+        if (repo is null) return;
+        await GitService.UnstageFileAsync(repo.WslDistro, repo.WslPath, filePath);
+        await RefreshStatus();
+    }
+
+    private void SelectFile((string filePath, bool isStaged) args)
+    {
+        var repo = AppState.ActiveRepo;
+        if (repo is null) return;
+        repo.SelectedFile = args.filePath;
+        repo.SelectedFileIsStaged = args.isStaged;
+        AppState.NotifyChange();
+    }
+}

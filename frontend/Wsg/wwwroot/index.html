@@ -4,17 +4,102 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wsg</title>
+    <title>WSG</title>
     <base href="/" />
     <link rel="preload" id="webassembly" />
-    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind CDN with custom Orchestrated Terminal theme -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-low":      "#091328",
+                        "on-primary":                 "#005d2f",
+                        "on-error-container":         "#ffa8a3",
+                        "on-tertiary":                "#573500",
+                        "surface-bright":             "#1f2b49",
+                        "on-primary-container":       "#00391b",
+                        "inverse-surface":            "#faf8ff",
+                        "on-background":              "#dee5ff",
+                        "secondary-container":        "#00668a",
+                        "primary":                    "#5bfc9a",
+                        "outline":                    "#6d758c",
+                        "surface-container-high":     "#141f38",
+                        "surface-container-highest":  "#192540",
+                        "on-tertiary-fixed-variant":  "#563400",
+                        "error":                      "#ff716c",
+                        "secondary-dim":              "#05a9e3",
+                        "primary-container":          "#05cb6f",
+                        "inverse-primary":            "#006e39",
+                        "tertiary-container":         "#f8a010",
+                        "tertiary":                   "#ffb148",
+                        "surface-variant":            "#192540",
+                        "on-secondary-fixed":         "#00394f",
+                        "on-secondary-fixed-variant": "#005777",
+                        "inverse-on-surface":         "#4d556b",
+                        "secondary-fixed-dim":        "#73ceff",
+                        "secondary":                  "#2db7f2",
+                        "background":                 "#060e20",
+                        "on-primary-fixed-variant":   "#006836",
+                        "on-tertiary-fixed":          "#2a1700",
+                        "surface-container-lowest":   "#000000",
+                        "on-secondary":               "#003044",
+                        "secondary-fixed":            "#9bdaff",
+                        "primary-dim":                "#4aed8d",
+                        "error-container":            "#9f0519",
+                        "primary-fixed":              "#5bfc9a",
+                        "outline-variant":            "#40485d",
+                        "surface-tint":               "#5bfc9a",
+                        "tertiary-dim":               "#e79400",
+                        "tertiary-fixed-dim":         "#e79400",
+                        "on-secondary-container":     "#f2f9ff",
+                        "on-surface":                 "#dee5ff",
+                        "error-dim":                  "#d7383b",
+                        "surface-container":          "#0f1930",
+                        "on-surface-variant":         "#a3aac4",
+                        "on-tertiary-container":      "#4a2c00",
+                        "tertiary-fixed":             "#f8a010",
+                        "primary-fixed-dim":          "#4aed8d",
+                        "surface-dim":                "#060e20",
+                        "on-primary-fixed":           "#004823",
+                        "on-error":                   "#490006",
+                        "surface":                    "#060e20"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg":      "0.25rem",
+                        "xl":      "0.5rem",
+                        "full":    "0.75rem"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body":     ["Inter"],
+                        "label":    ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- BlazorMonaco scripts (must come before Blazor bootstrap) -->
+    <script src="_content/BlazorMonaco/jsInterop.js"></script>
+    <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/loader.js"></script>
+    <script src="_content/BlazorMonaco/lib/monaco-editor/min/vs/editor/editor.main.js"></script>
+
     <link href="Wsg.styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/app.css" />
     <script type="importmap"></script>
 </head>
 
-<body>
+<body class="dark">
     <div id="app">
         <svg class="loading-progress">
             <circle r="40%" cx="50%" cy="50%" />

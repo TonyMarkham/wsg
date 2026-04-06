@@ -1,0 +1,36 @@
+@inject AppState AppState
+@implements IDisposable
+
+<nav class="bg-surface-container-low w-full flex items-center h-10 overflow-x-auto no-scrollbar font-body text-[11px] uppercase tracking-wider">
+    @foreach (var repo in AppState.Repos)
+    {
+        var isActive = AppState.ActiveRepo == repo;
+        <div class="@(isActive
+                        ? "text-on-surface bg-surface-container-high border-t-2 border-primary"
+                        : "text-on-surface-variant opacity-70 hover:bg-surface-container-high hover:text-on-surface")
+                     px-4 h-full flex items-center justify-center transition-all cursor-pointer shrink-0"
+             @onclick="() => AppState.SetActiveRepo(repo)">
+            @repo.Name
+        </div>
+    }
+
+    <div class="ml-auto flex items-center px-4 gap-4">
+        <span class="material-symbols-outlined text-primary cursor-pointer hover:opacity-80"
+              @onclick="OpenAddModal">add</span>
+        <span class="material-symbols-outlined text-primary cursor-pointer hover:opacity-80">more_vert</span>
+    </div>
+</nav>
+
+@code {
+    protected override void OnInitialized() => AppState.OnChange += OnStateChanged;
+
+    public void Dispose() => AppState.OnChange -= OnStateChanged;
+
+    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+
+    private void OpenAddModal()
+    {
+        AppState.ShowAddRepoModal = true;
+        AppState.NotifyChange();
+    }
+}
